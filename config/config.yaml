@@ -1,0 +1,22 @@
+#浏览器路径
+browserpath:
+    IEPath: C:\Program Files\Internet Explorer\iexplore.exe
+    ChromePath: C:\Users\Administrator\AppData\Local\Google\Chrome\Application
+#日志级别
+logging:
+    gloableloglevel: INFO
+    fileloglevel: INFO
+    consoleloglevel: INFO
+#浏览器设置
+checkersetting:
+    #默认是快速检查还是普通检查，值必须是NORMAL 或 QUICK
+    defaultcheckermode: NORMAL
+    #再次运行检查的间隔时间，单位：秒
+    rerundtime: 60
+    ###以下配置只针对普通检查有效##
+    #网页加载超时时间，单位：秒
+    page_load_timeout: 5
+    #脚本加载超时时间，单位：秒
+    script_timeout: 5
+
+    
