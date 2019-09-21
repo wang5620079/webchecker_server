@@ -18,7 +18,6 @@ currentdir = os.path.abspath(os.path.join(os.getcwd()))
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
-
 class Config:
 
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
@@ -34,15 +33,15 @@ class Config:
     FLASKY_POSTS_PER_PAGE = 20
 
     # 配置文件目录
-    CONFIGFILE = os.path.abspath(os.path.join(currentdir, 'config', 'config.yaml'))
+    CONFIGFILE = os.path.abspath(os.path.join(os.path.abspath(os.path.join(os.getcwd())), 'config', 'config.yaml'))
     # 数据库数据文件所在路径
-    DBFILEDIR = os.path.abspath(os.path.join(currentdir, 'data'))
+    DBFILEDIR = os.path.abspath(os.path.join(os.path.abspath(os.path.join(os.getcwd())), 'data'))
     # 数据库数据文件路径
-    DBFILE = os.path.abspath(os.path.join(DBFILEDIR, 'data','data.sqlite'))
+    DBFILE = os.path.abspath(os.path.join(os.path.abspath(os.path.join(os.getcwd())), 'data','data.sqlite'))
     # 日志文件所在路径
-    LOGDIR = os.path.abspath(os.path.join(currentdir, 'logs'))
+    LOGDIR = os.path.abspath(os.path.join(os.path.abspath(os.path.join(os.getcwd())), 'logs'))
     # phantomjs的目录
-    PHANTOMJSPATH=os.path.abspath(os.path.join(currentdir,'phantomjs','bin', 'phantomjs.exe'))
+    PHANTOMJSPATH=os.path.abspath(os.path.join(os.path.abspath(os.path.join(os.getcwd())),'phantomjs','bin', 'phantomjs.exe'))
     #桌面路径
     REGKEY = winreg.OpenKey(winreg.HKEY_CURRENT_USER,'Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders')
     DESCTOPPATH = winreg.QueryValueEx(REGKEY, "Desktop")[0]
@@ -70,26 +69,26 @@ class Config:
                     for key,val in userconfig['browserpath'].items():
                         if not os.path.exists(val):
                             raise Exception("{} 对应在路径 {} 未找到！".format(key,val))
-                    Config.BROWSERPATH = userconfig['browserpath']
+                    app.config['BROWSERPATH'] = userconfig['browserpath']
 
                 if 'logging' in userconfig:
                     levellst = ['DEBUG', 'INFO', 'WARN', 'ERROR', 'FALTAL']
                     loggingconfig = userconfig['logging']
                     if 'gloableloglevel' in loggingconfig:
                         if  loggingconfig['gloableloglevel'] in levellst:
-                            Config.GLOABLELOGLEVEL = loggingconfig['gloableloglevel']
+                            app.config['GLOABLELOGLEVEL'] = loggingconfig['gloableloglevel']
                         else:
                             raise Exception('{} 配置必须为 {} 之一'.format('gloableloglevel', levellst))
 
                     if 'fileloglevel' in loggingconfig:
                         if loggingconfig['fileloglevel'] in levellst:
-                            Config.FILELOGLEVEL = loggingconfig['fileloglevel']
+                            app.config['FILELOGLEVEL'] = loggingconfig['fileloglevel']
                         else:
                             raise Exception('{} 配置必须为 {} 之一'.format('fileloglevel', levellst))
 
                     if 'consoleloglevel' in loggingconfig:
                         if loggingconfig['consoleloglevel'] in levellst:
-                            Config.CONSOLELOGLEVEL = loggingconfig['consoleloglevel']
+                            app.config['CONSOLELOGLEVEL'] = loggingconfig['consoleloglevel']
                         else:
                             raise Exception('{} 配置必须为 {} 之一'.format('consoleloglevel', levellst))
 
@@ -97,22 +96,22 @@ class Config:
                     browsersetting = userconfig['checkersetting']
                     if 'defaultcheckermode' in browsersetting :
                         if browsersetting['defaultcheckermode'] in ['NORMAL', 'QUICK']:
-                            Config.DEFAULTCHECKERMODE = browsersetting['defaultcheckermode']
+                            app.config['DEFAULTCHECKERMODE'] = browsersetting['defaultcheckermode']
                         else:
                             raise Exception('{} 配置必须为 {} 之一'.format('defaultcheckermode', ['NORMAL', 'QUICK']))
                     if 'rerundtime' in browsersetting:
                         if isinstance(browsersetting['rerundtime'],int):
-                            Config.RERUNDTIME = browsersetting['rerundtime']
+                            app.config['RERUNDTIME'] = browsersetting['rerundtime']
                         else:
                             raise Exception('{} 配置必须为数值'.format('rerundtime'))
                     if 'page_load_timeout' in browsersetting:
                         if isinstance(browsersetting['page_load_timeout'],int):
-                            Config.PAGE_LOAD_TIMEOUT = browsersetting['page_load_timeout']
+                            app.config['PAGE_LOAD_TIMEOUT'] = browsersetting['page_load_timeout']
                         else:
                             raise Exception('{} 配置必须为数值'.format('page_load_timeout'))
                     if 'script_timeout' in browsersetting:
                         if isinstance(browsersetting['script_timeout'],int):
-                            Config.SCRIPT_TIMEOUT = browsersetting['script_timeout']
+                            app.config['SCRIPT_TIMEOUT'] = browsersetting['script_timeout']
                         else:
                             raise Exception('{} 配置必须为数值'.format('script_timeout'))
         except FileNotFoundError as e:

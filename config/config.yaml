@@ -4,9 +4,9 @@ browserpath:
     ChromePath: C:\Users\Administrator\AppData\Local\Google\Chrome\Application
 #日志级别
 logging:
-    gloableloglevel: INFO
+    gloableloglevel: DEBUG
     fileloglevel: INFO
-    consoleloglevel: INFO
+    consoleloglevel: DEBUG
 #浏览器设置
 checkersetting:
     #默认是快速检查还是普通检查，值必须是NORMAL 或 QUICK
