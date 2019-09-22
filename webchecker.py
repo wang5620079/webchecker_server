@@ -2,6 +2,7 @@
 #encoding:UTF-8
 # -*- coding: utf-8 -*-
 
+from flask import current_app
 import os
 import flask_migrate
 import flask_script
@@ -26,5 +27,9 @@ manager.add_command('db', flask_migrate.MigrateCommand)
 def make_shell_context():
     return dict(db=db,Tab=Tab)
 
+
+
 if __name__ == '__main__':
+
     app.run(Debug=True)
+

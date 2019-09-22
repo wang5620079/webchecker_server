@@ -6,8 +6,9 @@
 # @Software: win10 Tensorflow1.13.1 python3.7
 
 
-from flask import render_template
+from flask import render_template,current_app
 from . import main
+from app import scheduler
 
 from utils import logutils
 
@@ -19,3 +20,16 @@ def index():
     user="webchecker"
     return render_template('index.html',user=user)
 
+@main.route('/setinfo/<info>', methods=['GET', 'POST'])
+def setinfo(info):
+    from webchecker import app
+    with app.app_context():
+        current_app.__setattr__('urllist',['www.baidu.com','www.sina.com'])
+    return 'ok'
+
+@main.route('/getinfo', methods=['GET', 'POST'])
+def getinfo():
+    from webchecker import app
+    with app.app_context():
+        print(current_app.__getattr__('info'))
+    return 'aaaaa'

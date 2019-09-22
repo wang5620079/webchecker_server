@@ -32,6 +32,12 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     FLASKY_POSTS_PER_PAGE = 20
 
+    # 自动任务配置
+    #允许定时任务API
+    SCHEDULER_API_ENABLED = True
+    #测试用的JOBINFO
+    JOBINFO='jobinfo'
+
     # 配置文件目录
     CONFIGFILE = os.path.abspath(os.path.join(os.path.abspath(os.path.join(os.getcwd())), 'config', 'config.yaml'))
     # 数据库数据文件所在路径
@@ -55,6 +61,8 @@ class Config:
     RERUNDTIME = 60
     DEFAULTCHECKERMODE = 'NORMAL'
     BROWSERPATH = dict()
+
+
 
     @staticmethod
     def init_app(app):

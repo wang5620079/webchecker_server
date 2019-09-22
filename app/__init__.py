@@ -5,10 +5,13 @@
 # @File    : __init__.py
 # @Software: win10 Tensorflow1.13.1 python3.7
 
-from flask import Flask
+from flask import Flask,current_app
 from flask_mail import Mail
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
+from flask_apscheduler import APScheduler
+
+from worker import testworker
 from config import config
 
 from utils import logutils
@@ -17,7 +20,7 @@ from utils import logutils
 mail = Mail()
 moment = Moment()
 db = SQLAlchemy()
-
+scheduler = APScheduler()
 
 
 def create_app(config_name):
@@ -29,6 +32,18 @@ def create_app(config_name):
     moment.init_app(app)
     db.init_app(app)
     logutils.init_app(app)
+    #定时任务
+    #####################################################上面代码忽略
+    # 这里是重点
+    # 初始化备份数据库定时器
+    scheduler.api_enabled = True
+    scheduler.init_app(app)
+
+    scheduler.add_job(id='testjob',func=testworker.work, trigger='interval', seconds=2)
+    scheduler.start()
+    ######################################################下面代码忽略
+
+
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
