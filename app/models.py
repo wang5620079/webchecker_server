@@ -7,17 +7,23 @@
 
 from . import db
 
-class Tab(db.Model):
-    __tablename_ = 'tab'
+
+class Url(db.Model):
+    __tablename_ = 'urls'
     id = db.Column(db.INTEGER,primary_key=True,autoincrement=True)
     name = db.Column(db.String(64), unique=True, index=True)
-    score = db.Column(db.INTEGER)
+    url = db.Column(db.TEXT)
+    mode = db.Column(db.String(10))
+    timeout = db.Column(db.INTEGER)
+
+    def to_dict(self):
+        return {
+            'id':self.id,
+            'name':self.name,
+            'url': self.url,
+            'mode': self.mode,
+            'timeout': self.timeout,
+        }
 
     def __repr__(self):
         return  '\r\n'.join(['{}={}'.format(key,val) for key,val in self.__dict__.items()])
-
-
-class Configuration(db.Model):
-    __tablename_ = 'configuration'
-    id = db.Column(db.INTEGER, primary_key=True)
-

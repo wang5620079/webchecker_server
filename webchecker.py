@@ -9,10 +9,12 @@ import flask_script
 # from flask_migrate import Migrate
 # from flask_script import Manager
 from app import create_app, db
-from app.models import Tab
+from app.models import Url
+from flask_marshmallow import Marshmallow
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
-
+#格式化输出输出json用的
+ma = Marshmallow(app)
 
 # 初始化 migrate
 # 两个参数一个是 Flask 的 app，一个是数据库 db
@@ -25,7 +27,7 @@ manager.add_command('db', flask_migrate.MigrateCommand)
 
 @app.shell_context_processor
 def make_shell_context():
-    return dict(db=db,Tab=Tab)
+    return dict(db=db,Url=Url)
 
 
 

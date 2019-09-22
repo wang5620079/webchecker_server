@@ -32,11 +32,18 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     FLASKY_POSTS_PER_PAGE = 20
 
+    #返回json的配置
+    JSON_AS_ASCII = False
+
     # 自动任务配置
     #允许定时任务API
     SCHEDULER_API_ENABLED = True
     #测试用的JOBINFO
     JOBINFO='jobinfo'
+
+    #上传文件所在目录
+    UPLOAD_FOLDER = os.path.abspath(os.path.join(os.path.abspath(os.path.join(os.getcwd())), 'upload'))
+    ALLOWED_EXTENSIONS = set(['xls','xlsx'])
 
     # 配置文件目录
     CONFIGFILE = os.path.abspath(os.path.join(os.path.abspath(os.path.join(os.getcwd())), 'config', 'config.yaml'))
@@ -128,6 +135,10 @@ class Config:
             print("错误:{},{}".format(e, " 初始化失败，退出!"))
             sys.exit(1)
 
+        # 如果上传路径不存在，则创建
+        if not os.path.exists(Config.UPLOAD_FOLDER):
+            print("第一次运行，创建上传文件目录{}".format(Config.UPLOAD_FOLDER))
+            os.makedirs(Config.UPLOAD_FOLDER)
         #如果数据库路径不存在，则创建
         if not os.path.exists(Config.DBFILEDIR):
             print("第一次运行，创建数据库目录{}".format(Config.DBFILEDIR))
