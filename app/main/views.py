@@ -36,6 +36,7 @@ def getinfo():
     logger.debug(urllist)
     return 'ok'
 
+
 @main.route('/testqueue/rs_q', methods=['GET', 'POST'])
 def test_rs_q():
     queuemaker.rs_q.put("{} test re_q".format(dtutils.get_nowtime_str()))
@@ -48,4 +49,12 @@ def test_pjs_q():
 @main.route('/testqueue/result_q', methods=['GET', 'POST'])
 def test_result_q():
     queuemaker.result_q.put("{} test result_q".format(dtutils.get_nowtime_str()))
+    return 'ok'
+
+@main.route('/testqueue/clear_result_q', methods=['GET', 'POST'])
+def clear_result_q():
+    logger.debug(queuemaker.result_q.qsize())
+    while not queuemaker.result_q.empty():
+        queuemaker.result_q.get(block=False)
+    logger.debug(queuemaker.result_q.qsize())
     return 'ok'

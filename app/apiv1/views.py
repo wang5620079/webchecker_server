@@ -83,11 +83,12 @@ def upload_file():
         if file.filename == '':
             return jsonerror('No selected file')
         if file and allowed_file(file.filename):
-            filename = werkzeug.secure_filename(file.filename)
+            # filename = werkzeug.secure_filename(file.filename)
+            filename = file.filename
             [fname, fename] = os.path.splitext(filename)
             fname = fname.strip()
             fename = fename.strip()
-            filename=fname+dtutils.get_nowtime_str(fmt='%Y%m%d%H%M%S')+'.'+fename
+            filename=fname+dtutils.get_nowtime_str(fmt='%Y%m%d%H%M%S')+fename
             filepath=os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             ##这里开始解析数据
