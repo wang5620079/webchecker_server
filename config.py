@@ -17,6 +17,20 @@ currentdir = os.path.abspath(os.path.join(os.getcwd()))
 #基础目录
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+class APSSchedulerConfig(object):
+    JOBS = [
+        {
+            'id': 'teestjob',
+            'func':'webchecker_server.testworker:work',
+            'args':None,
+            'trigger': {
+                'type': 'interval',
+                'seconds': '2'
+            }
+        }
+    ]
+    SCHEDULER_API_ENABLED = True
+    SQLALCHEMY_ECHO = True
 
 class Config:
 
@@ -37,9 +51,9 @@ class Config:
 
     # 自动任务配置
     #允许定时任务API
-    SCHEDULER_API_ENABLED = True
+    # SCHEDULER_API_ENABLED = True
     #测试用的JOBINFO
-    JOBINFO='jobinfo'
+    # JOBINFO='jobinfo'
 
     #上传文件所在目录
     UPLOAD_FOLDER = os.path.abspath(os.path.join(os.path.abspath(os.path.join(os.getcwd())), 'upload'))

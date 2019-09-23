@@ -5,14 +5,16 @@
 # @File    : __init__.py
 # @Software: win10 Tensorflow1.13.1 python3.7
 
-from flask import Flask,current_app
+
+from flask import Flask
 from flask_mail import Mail
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
-from flask_apscheduler import APScheduler
 
+from schedulerworker import apscheduler
 
-from worker import testworker
+import testworker
+
 from config import config
 
 from utils import logutils
@@ -21,9 +23,12 @@ from utils import logutils
 mail = Mail()
 moment = Moment()
 db = SQLAlchemy()
-scheduler = APScheduler()
+# scheduler = APScheduler()
 
 
+# def work():
+#    urls=db.session.query(Url).all()
+#    print(urls)
 
 def create_app(config_name):
     app = Flask(__name__)
@@ -34,16 +39,15 @@ def create_app(config_name):
     mail.init_app(app)
     moment.init_app(app)
     db.init_app(app)
+    # db.app=app
     logutils.init_app(app)
     #定时任务
     #####################################################上面代码忽略
     # 这里是重点
-    # 初始化备份数据库定时器
-    scheduler.api_enabled = True
-    scheduler.init_app(app)
-
-    scheduler.add_job(id='testjob',func=testworker.work, trigger='interval', seconds=2)
-    scheduler.start()
+    apscheduler.api_enabled = True
+    apscheduler.init_app(app)
+    apscheduler.add_job(id='testjob', func=testworker.work, trigger='interval', seconds=2)
+    apscheduler.start()
     ######################################################下面代码忽略
 
 

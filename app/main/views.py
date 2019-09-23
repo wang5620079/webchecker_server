@@ -8,7 +8,6 @@
 
 from flask import render_template,current_app,send_file
 from . import main
-from app import scheduler
 
 from utils import logutils
 
@@ -17,18 +16,19 @@ logger = logutils.getlogger(__file__)
 @main.route('/', methods=['GET', 'POST'])
 def index():
     logger.debug("****** 进入主目录 *****")
-    return send_file('index.html')
+    return "OK"
+    # return send_file('index.html')
 
 @main.route('/setinfo/<info>', methods=['GET', 'POST'])
 def setinfo(info):
-    from webchecker import app
-    with app.app_context():
-        current_app.__setattr__('urllist',['www.baidu.com','www.sina.com'])
+    # from webchecker import app
+    app=current_app._get_current_object()
+    setattr(app,'urllist',['www.baidu.com','www.sina.com'])
     return 'ok'
 
 @main.route('/getinfo', methods=['GET', 'POST'])
 def getinfo():
-    from webchecker import app
-    with app.app_context():
-        print(current_app.__getattr__('info'))
-    return 'aaaaa'
+    app = current_app._get_current_object()
+    urllist=getattr(app, 'urllist')
+    logger.debug(urllist)
+    return 'ok'

@@ -10,11 +10,8 @@ import flask_script
 # from flask_script import Manager
 from app import create_app, db
 from app.models import Url
-from flask_marshmallow import Marshmallow
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
-#格式化输出输出json用的
-ma = Marshmallow(app)
 
 # 初始化 migrate
 # 两个参数一个是 Flask 的 app，一个是数据库 db
@@ -30,8 +27,18 @@ def make_shell_context():
     return dict(db=db,Url=Url)
 
 
+def work():
+    with app.app_context():
+        urls = db.session.query(Url).all()
+        print(urls)
+
+# app.config.from_object(APSSchedulerConfig)
 
 if __name__ == '__main__':
-
+    # apscheduler.init_app(app)
+    # apscheduler.add_job(id='testjob', func=testworker.work, trigger='interval', seconds=2)
+    # apscheduler.start()
     app.run(Debug=True)
+
+
 
