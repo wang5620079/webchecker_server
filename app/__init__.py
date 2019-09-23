@@ -9,26 +9,19 @@
 from flask import Flask
 from flask_mail import Mail
 from flask_moment import Moment
-from flask_sqlalchemy import SQLAlchemy
+#从公共组件中引入，包含引入队列组件
+from  common import db,apscheduler,queuemaker
 
-from schedulerworker import apscheduler
-
-import testworker
+#自动任务
+from schedulerworker import worker
 
 from config import config
 
 from utils import logutils
 
-# bootstrap = Bootstrap()
 mail = Mail()
 moment = Moment()
-db = SQLAlchemy()
-# scheduler = APScheduler()
 
-
-# def work():
-#    urls=db.session.query(Url).all()
-#    print(urls)
 
 def create_app(config_name):
     app = Flask(__name__)
@@ -39,16 +32,19 @@ def create_app(config_name):
     mail.init_app(app)
     moment.init_app(app)
     db.init_app(app)
-    # db.app=app
     logutils.init_app(app)
+    ########任务队列创建################################
+    queuemaker.init_app(app)
     #定时任务
-    #####################################################上面代码忽略
+    #####################################################
     # 这里是重点
-    apscheduler.api_enabled = True
-    apscheduler.init_app(app)
-    apscheduler.add_job(id='testjob', func=testworker.work, trigger='interval', seconds=2)
-    apscheduler.start()
-    ######################################################下面代码忽略
+    # apscheduler.api_enabled = True
+    # apscheduler.init_app(app)
+    # rs_q, pjs_q, result_q = queuemaker.get_all_queue()
+    # print(rs_q, pjs_q, result_q)
+    # apscheduler.add_job(id='testjob', func=worker.work, trigger='interval', seconds=2)
+    # apscheduler.start()
+    ######################################################
 
 
 

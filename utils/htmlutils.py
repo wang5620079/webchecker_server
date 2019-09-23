@@ -2,29 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import urllib
-import urllib
-import requests
-from http import cookiejar
-#html解析
-from bs4 import BeautifulSoup
-from sysconfig import systemconfig
-
 #日志模块
 from utils import logutils
-logger=None
-if not logger:
-    logger=logutils.getlogger(__file__)
-
-
-
-#cookie初始化
-httpsession = requests.session()
-newcj = cookiejar.LWPCookieJar()
-httpsession.cookies = newcj
-
-
-
-
+logger=logutils.getlogger(__file__)
 
 def newgetHtml(url,postDataList=None,pdata=None,headers=None):
 
@@ -37,9 +17,9 @@ def newgetHtml(url,postDataList=None,pdata=None,headers=None):
             'Accept-Language': 'zh-CN,zh;q=0.8',
             'Cache-Control': 'no-cache',
             'Connection': 'keep-alive',
-            'Host':  systemconfig.hostparamdic[systemconfig.host]['host'],
+            'Host':  '',
             'Pragma': 'no-cache',
-            'Referer': systemconfig.hostparamdic[systemconfig.host]['baseurl']+'/secure/Dashboard.jspa',
+            'Referer': '',
             'Upgrade-Insecure-Requests': '0',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0'
         }

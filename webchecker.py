@@ -32,12 +32,8 @@ def work():
         urls = db.session.query(Url).all()
         print(urls)
 
-# app.config.from_object(APSSchedulerConfig)
 
 if __name__ == '__main__':
-    # apscheduler.init_app(app)
-    # apscheduler.add_job(id='testjob', func=testworker.work, trigger='interval', seconds=2)
-    # apscheduler.start()
     app.run(Debug=True)
 
 

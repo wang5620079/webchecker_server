@@ -17,20 +17,6 @@ currentdir = os.path.abspath(os.path.join(os.getcwd()))
 #基础目录
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-class APSSchedulerConfig(object):
-    JOBS = [
-        {
-            'id': 'teestjob',
-            'func':'webchecker_server.testworker:work',
-            'args':None,
-            'trigger': {
-                'type': 'interval',
-                'seconds': '2'
-            }
-        }
-    ]
-    SCHEDULER_API_ENABLED = True
-    SQLALCHEMY_ECHO = True
 
 class Config:
 
@@ -46,19 +32,14 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     FLASKY_POSTS_PER_PAGE = 20
 
-    #返回json的配置
-    JSON_AS_ASCII = False
 
-    # 自动任务配置
-    #允许定时任务API
-    # SCHEDULER_API_ENABLED = True
-    #测试用的JOBINFO
-    # JOBINFO='jobinfo'
 
     #上传文件所在目录
     UPLOAD_FOLDER = os.path.abspath(os.path.join(os.path.abspath(os.path.join(os.getcwd())), 'upload'))
     ALLOWED_EXTENSIONS = set(['xls','xlsx'])
 
+    #模板文件所在的路径
+    TEMPLATE_DIR=os.path.abspath(os.path.join(os.getcwd(), 'resources'))
     # 配置文件目录
     CONFIGFILE = os.path.abspath(os.path.join(os.path.abspath(os.path.join(os.getcwd())), 'config', 'config.yaml'))
     # 数据库数据文件所在路径
@@ -81,7 +62,13 @@ class Config:
     SCRIPT_TIMEOUT = 5
     RERUNDTIME = 60
     DEFAULTCHECKERMODE = 'NORMAL'
-    BROWSERPATH = dict()
+
+    # 返回json的配置
+    JSON_AS_ASCII = False
+    #自动任务配置
+    SCHEDULER_API_ENABLED = True
+    #自动任务队列长度,默认100
+    MAX_JOB_QUEUE_SIZE=100
 
 
 

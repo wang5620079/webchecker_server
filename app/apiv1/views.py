@@ -12,10 +12,10 @@ import app.models as models
 from utils import logutils
 import json
 import werkzeug
-from .apiv1uitls import jsonerror
+from .apiv1uitls import jsonerror,jsonmsg
 from utils import excelparser
 
-from flask import request
+from flask import request,Response,current_app,send_from_directory
 
 logger = logutils.getlogger(__file__)
 
@@ -34,13 +34,44 @@ def geturls():
     tmpdict['data']=tmplst
     return json.dumps(tmpdict, ensure_ascii=False)
 
-#url数据上传
+
+# 下载url设置模板
+@apiv1.route('/getUrlTemplate', methods=['GET', 'POST'])
+def get_url_template():
+    logger.debug('**进入配置文件下载**')
+    app = current_app._get_current_object()
+    config = getattr(app, 'config')
+    return send_from_directory(config['TEMPLATE_DIR'],filename='url配置模板.xlsx',as_attachment=True)
+    # if request.method == 'GET':
+    #     app = current_app._get_current_object()
+    #     config = getattr(app, 'config')
+    #     filepath = os.sep.join([config['TEMPLATE_DIR'], 'url配置模板.xlsx'])
+    #     # 流式读取
+    #     def send_file():
+    #         store_path = filepath
+    #         with open(store_path, 'rb') as targetfile:
+    #             while 1:
+    #                 data = targetfile.read(20 * 1024)  # 每次读取20M
+    #                 if not data:
+    #                     break
+    #                 yield data
+    #
+    #     response = Response(send_file(), content_type='application/octet-stream')
+    #     response.headers["Content-Disposition"] = 'attachment; filename={}'.format('url配置模板').encode('utf-8').decode('latin-1') # 如果不加上这行代码，导致下图的问题
+    # else:
+    #     return jsonerror('请求方式不允许！')
+    # return response
+
+#url数据上传过滤
 def allowed_file(filename):
     from webchecker import app
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
+#上传url任务清单
 @apiv1.route('/upload', methods=['GET', 'POST'])
 def upload_file():
+    #返回消息的list
+    result_lst = []
     from webchecker import app
     if request.method == 'POST':
         # check if the post request has the file part
@@ -69,7 +100,11 @@ def upload_file():
             models.Url.query.delete()
             urllst=[]
             for item in datalst[1:]:
-                url = models.Url(name=item[1],url=item[2],mode=item[3],timeout=item[4])
+                #如果模式不在规定的模式中，则自动忽略
+                if str(item[3]).upper() not in ['QUICK','NORMAL']:
+                    result_lst.append('{} 对应的模式 {} 不在标准模式 QUICK 或 NORMAL 中，忽略！'.format(item[0],item[3]))
+                    continue
+                url = models.Url(name=item[1],url=item[2],mode=str(item[3]).upper(),timeout=item[4])
                 urllst.append(url)
             #写库
             db.session.add_all(urllst)
@@ -77,4 +112,5 @@ def upload_file():
             return  '{"filename":"%s"}' % filename
         else:
             return jsonerror('文件类型不允许！')
-    return ''
+    return jsonmsg('\r\n'.join(result_lst))
+

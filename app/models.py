@@ -5,7 +5,7 @@
 # @File    : models.py
 # @Software: win10 Tensorflow1.13.1 python3.7
 
-from . import db
+from common import db
 
 
 class Url(db.Model):
@@ -14,6 +14,7 @@ class Url(db.Model):
     name = db.Column(db.String(64), unique=True, index=True)
     url = db.Column(db.TEXT)
     mode = db.Column(db.String(10))
+    method = db.Column(db.String(10))
     timeout = db.Column(db.INTEGER)
 
     def to_dict(self):
@@ -22,6 +23,7 @@ class Url(db.Model):
             'name':self.name,
             'url': self.url,
             'mode': self.mode,
+            'method':self.method,
             'timeout': self.timeout,
         }
 
