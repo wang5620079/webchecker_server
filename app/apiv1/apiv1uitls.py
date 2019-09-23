@@ -8,15 +8,25 @@
 import json
 from utils import logutils
 logger=logutils.getlogger(__file__)
-def jsonerror(msg):
+def jsonerror(responseText ='error' ,status=None,statusText='error'):
     tmpdict=dict()
     tmpdict['success']=False
-    tmpdict['msg']=msg
-    logger.error("msg={}".format(msg))
+    tmpdict['responseText ']=responseText
+    tmpdict['statusText '] = statusText
+    tmpdict['readyState']=4
+    if status:
+        tmpdict['status'] = status
+    else:
+        tmpdict['status'] = 500
+    logger.error("errorinfo ={}".format(tmpdict ))
+
     return json.dumps(tmpdict, ensure_ascii=False)
-def jsonmsg(msg):
+def jsonmsg(responseText):
     tmpdict=dict()
     tmpdict['success']=True
-    tmpdict['msg']=msg
-    logger.debug("msg={}".format(msg))
+    tmpdict['statusText ']='ok'
+    tmpdict['responseText']='ok'
+    tmpdict['readyState'] = 4
+    tmpdict['status'] = 200
+    logger.debug("successinfo ={}".format(tmpdict ))
     return json.dumps(tmpdict, ensure_ascii=False)

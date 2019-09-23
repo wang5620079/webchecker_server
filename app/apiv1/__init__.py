@@ -6,8 +6,6 @@
 # @Software: win10 Tensorflow1.13.1 python3.7
 
 from flask import Blueprint
-from app import db
 apiv1 = Blueprint('apiv1', __name__)
-
-from . import jobs, errors,config,views
+from . import views
 

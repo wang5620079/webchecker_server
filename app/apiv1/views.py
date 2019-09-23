@@ -13,7 +13,7 @@ from utils import logutils
 import json
 import werkzeug
 from .apiv1uitls import jsonerror,jsonmsg
-from utils import excelparser
+from utils import excelparser,dtutils
 
 from flask import request,Response,current_app,send_from_directory
 
@@ -68,7 +68,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 #上传url任务清单
-@apiv1.route('/upload', methods=['GET', 'POST'])
+@apiv1.route('/upload', methods=['POST'])
 def upload_file():
     #返回消息的list
     result_lst = []
@@ -84,7 +84,10 @@ def upload_file():
             return jsonerror('No selected file')
         if file and allowed_file(file.filename):
             filename = werkzeug.secure_filename(file.filename)
-            filename=filename.rsplit('.', 1)[0].lower()+ datetime.datetime.now().strftime("%Y%m%d%H%M%S")+'.'+filename.rsplit('.', 1)[1].lower()
+            [fname, fename] = os.path.splitext(filename)
+            fname = fname.strip()
+            fename = fename.strip()
+            filename=fname+dtutils.get_nowtime_str(fmt='%Y%m%d%H%M%S')+'.'+fename
             filepath=os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             ##这里开始解析数据
@@ -104,13 +107,16 @@ def upload_file():
                 if str(item[3]).upper() not in ['QUICK','NORMAL']:
                     result_lst.append('{} 对应的模式 {} 不在标准模式 QUICK 或 NORMAL 中，忽略！'.format(item[0],item[3]))
                     continue
-                url = models.Url(name=item[1],url=item[2],mode=str(item[3]).upper(),timeout=item[4])
+                if not item[4] or str(item[4]).upper() not in ['GET','POST']:
+                    result_lst.append('{} 对应的请求方式 {} 不在标准模式 GET 或 GET 中，默认使用Get！'.format(item[0],item[4]))
+                    item[4]='GET'
+                url = models.Url(name=item[1],url=item[2],mode=str(item[3]).upper(),method=item[4],timeout=item[5])
                 urllst.append(url)
             #写库
             db.session.add_all(urllst)
             db.session.commit()
             return  '{"filename":"%s"}' % filename
-        else:
-            return jsonerror('文件类型不允许！')
+    else:
+        return jsonerror('请求类型不允许！')
     return jsonmsg('\r\n'.join(result_lst))
 

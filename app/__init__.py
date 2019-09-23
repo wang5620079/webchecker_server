@@ -40,9 +40,9 @@ def create_app(config_name):
     # 这里是重点
     # apscheduler.api_enabled = True
     # apscheduler.init_app(app)
-    # rs_q, pjs_q, result_q = queuemaker.get_all_queue()
-    # print(rs_q, pjs_q, result_q)
-    # apscheduler.add_job(id='testjob', func=worker.work, trigger='interval', seconds=2)
+    # apscheduler.add_job(id='put_ruls', func=worker.put_urls, trigger='interval', seconds=1)
+    # apscheduler.add_job(id='rs_work', func=worker.rs_work, trigger='interval', seconds=1)
+    # apscheduler.add_job(id='pjs_work', func=worker.pjs_work, trigger='interval', seconds=1)
     # apscheduler.start()
     ######################################################
 

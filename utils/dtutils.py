@@ -31,14 +31,12 @@ def ses2datetime(sec):
     dt = datetime.datetime.strptime(otherStyleTime, "%Y-%m-%d %H:%M:%S")
     return dt
 
-def get_nowtime_str():
+def get_nowtime_str(fmt=None):
     nowtime = datetime.datetime.now()
+    if fmt:
+        return nowtime.strftime(fmt)
     return nowtime.strftime('%Y-%m-%d %H:%M:%S')
 
 if __name__=='__main__':
-    ts = int(1559911159751 / 1000)
-    print(timestamp2strftime(ts))
-
-    ts=now2seconds()
-    print(timestamp2strftime(ts))
-    print(ses2datetime(ts))
+    print(get_nowtime_str(fmt='%Y%m%d%H%M%S'))
+    print(datetime.datetime.now().strftime("%Y%m%d%H%M%S"))

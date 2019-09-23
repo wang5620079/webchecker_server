@@ -15,20 +15,39 @@ logger=logutils.getlogger(__file__)
 def put_urls():
     rs_q = queuemaker.rs_q
     pjs_q = queuemaker.pjs_q
-    if rs_q.empty():
-        logger.debug('rs队列空，压入数据')
-        rsurls = Url.query.filter(Url.mode=='QUICK').all()
-        if rsurls and len(rsurls)>0:
-            for item in rsurls:
-                rs_q.put(item)
-    if pjs_q.empty():
-        logger.debug('pjs队列空，压入数据')
-        prsurls = Url.query.filter(Url.mode=='NORMAL').all()
-        if prsurls and len(prsurls)>0:
-            for item in prsurls:
-                pjs_q.put(item)
+    with apscheduler.app.app_context():
+        if rs_q.empty():
+            logger.debug('rs队列空，压入数据')
+            rsurls = Url.query.filter(Url.mode == 'QUICK').all()
+            if rsurls and len(rsurls) > 0:
+                for item in rsurls:
+                    rs_q.put(item)
+        if pjs_q.empty():
+            logger.debug('pjs队列空，压入数据')
+            prsurls = Url.query.filter(Url.mode == 'NORMAL').all()
+            if prsurls and len(prsurls) > 0:
+                for item in prsurls:
+                    pjs_q.put(item)
 
 
+#运行requests请求的任务
+def rs_work():
+    with apscheduler.app.app_context():
+        try:
+            rs_q = queuemaker.rs_q
+            item = rs_q.get(block=False)
+            logger.debug('取出rs_q rs_q={}'.format(item))
+        except Exception  as e:
+            pass
+
+def pjs_work():
+    with apscheduler.app.app_context():
+        try:
+            prs_q = queuemaker.pjs_q
+            item = prs_q.get(block=False)
+            logger.debug('取出pjs_q prs_q={}'.format(item))
+        except Exception  as e:
+            pass
 
 #######################以下是测试##########################
 def work():
