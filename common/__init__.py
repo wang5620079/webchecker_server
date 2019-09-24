@@ -10,7 +10,10 @@
 from .jobqueue import QueueMaker
 from flask_apscheduler import APScheduler
 from flask_sqlalchemy import SQLAlchemy
+from spiders import PhantomjsSpider
 
 queuemaker = QueueMaker()
 apscheduler = APScheduler()
 db = SQLAlchemy()
+
+phantomjsspider = PhantomjsSpider()

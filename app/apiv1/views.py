@@ -34,6 +34,30 @@ def geturls():
     tmpdict['data']=tmplst
     return json.dumps(tmpdict, ensure_ascii=False)
 
+#获取手动监控url数据
+@apiv1.route('/getmaualcheckurls', methods=['GET', 'POST'])
+def getmaualcheckurls():
+    urls=models.Url.query.all()
+    # logger.debug(urls)
+    tmplst=[item.to_dict() for item in urls]
+    #增加status信息
+    for item in tmplst:
+        item['status']={}
+        item['status']['ok']=['待检查',]
+        item['status']['error']=[]
+    tmpdict=dict()
+    tmpdict['total']=len(urls)
+    tmpdict['data']=tmplst
+    return json.dumps(tmpdict, ensure_ascii=False)
+
+#手动检查某一个url
+@apiv1.route('/maualcheckurl', methods=['GET', 'POST'])
+def maualcheckurl():
+    params = request.data
+    jsondata=json.loads(params)
+    logger.debug("jsondata={}".format(jsondata))
+    return jsonmsg('ok')
+
 
 # 下载url设置模板
 @apiv1.route('/getUrlTemplate', methods=['GET', 'POST'])
@@ -78,12 +102,9 @@ def upload_file():
         if 'file' not in request.files:
             return jsonerror('没有上传文件的字段！')
         file = request.files['file']
-        # if user does not select file, browser also
-        # submit an empty part without filename
         if file.filename == '':
             return jsonerror('No selected file')
         if file and allowed_file(file.filename):
-            # filename = werkzeug.secure_filename(file.filename)
             filename = file.filename
             [fname, fename] = os.path.splitext(filename)
             fname = fname.strip()
